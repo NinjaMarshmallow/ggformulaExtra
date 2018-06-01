@@ -33,36 +33,6 @@ gf_text_repel <-
     )
   )
 
-#' @rdname gf_text_repel
-#'
-#' @export
-gf_label_repel <-
-  ggformula::layer_factory(
-    layer_fun = ggrepel::geom_label_repel,
-    geom = "text_repel",
-    stat = "identity",
-    position = "identity",
-    pre = {
-      if (nudge_x != 0 || nudge_y != 0)
-        position <- position_nudge(nudge_x, nudge_y)
-    },
-    aes_form = y ~ x,
-    extras = alist(
-      label = , alpha = , angle = , color = , family = , fontface = ,
-      group = , hjust = , lineheight = , size = , vjust = ,
-      parse = FALSE,
-      box.padding = 0.25, label.padding = 0.25, point.padding = 1e-06,
-      label.r = 0.15, label.size = 0.25,
-      segment.colour = NULL, segment.color = NULL,
-      segment.size = 0.5, segment.alpha = NULL,
-      min.segment.length = 0.5, arrow = NULL, force = 1,
-      max.iter = 2000, nudge_x = 0, nudge_y = 0,
-      xlim = c(NA, NA), ylim = c(NA, NA),
-      direction = c("both", "y", "x"),
-      seed = NA
-    )
-  )
-
 #' @examples
 #' mtcars$model <- rownames(mtcars)
 #' mtcars$cylinders <- factor(mtcars$cyl)
@@ -92,7 +62,7 @@ gf_label_repel <-
 #' p %>% gf_text_repel(label = ~ model, min.segment.length = Inf)
 #'
 #' # Repel just the labels and totally ignore the data points
-#' p %>% geom_text_repel(label = ~ model, point.padding = NA)
+#' p %>% gf_text_repel(label = ~ model, point.padding = NA)
 #'
 #' # Hide some of the labels, but repel from all data points
 #' mtcars$label <- rownames(mtcars)
@@ -128,4 +98,50 @@ gf_label_repel <-
 #'     arrow = arrow(length = unit(0.02, "npc")),
 #'     box.padding = 1
 #'   )
+#'
+#' gf_point( 1 ~ wt, data = mtcars, color = "red") %>%
+#'   gf_text_repel(label = ~ model,
+#'     nudge_y      = 0.04,
+#'     direction    = "x",
+#'     angle        = 90,
+#'     vjust        = 0,
+#'     segment.size = 0.2) %>%
+#'  gf_lims(x = c(1, 6), y = c(1, 0.9)) %>%
+#'  gf_theme(
+#'     axis.line.y  = element_blank(),
+#'     axis.ticks.y = element_blank(),
+#'     axis.text.y  = element_blank(),
+#'     axis.title.y = element_blank()
+#'   ) %>%
+#'  gf_theme(theme_bw())
+
+#' @rdname gf_text_repel
+#'
+#' @export
+gf_label_repel <-
+  ggformula::layer_factory(
+    layer_fun = ggrepel::geom_label_repel,
+    geom = "text_repel",
+    stat = "identity",
+    position = "identity",
+    pre = {
+      if (nudge_x != 0 || nudge_y != 0)
+        position <- position_nudge(nudge_x, nudge_y)
+    },
+    aes_form = y ~ x,
+    extras = alist(
+      label = , alpha = , angle = , color = , family = , fontface = ,
+      group = , hjust = , lineheight = , size = , vjust = ,
+      parse = FALSE,
+      box.padding = 0.25, label.padding = 0.25, point.padding = 1e-06,
+      label.r = 0.15, label.size = 0.25,
+      segment.colour = NULL, segment.color = NULL,
+      segment.size = 0.5, segment.alpha = NULL,
+      min.segment.length = 0.5, arrow = NULL, force = 1,
+      max.iter = 2000, nudge_x = 0, nudge_y = 0,
+      xlim = c(NA, NA), ylim = c(NA, NA),
+      direction = c("both", "y", "x"),
+      seed = NA
+    )
+  )
 

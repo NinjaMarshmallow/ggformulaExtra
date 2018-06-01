@@ -204,22 +204,86 @@ by using \code{direction="y"}. For \code{vjust}, use \code{direction="x"}.
 }
 
 \examples{
-gf_text(Sepal.Length ~ Sepal.Width, data = iris,
-  label = ~Species, color = ~Species, size = 2, angle = 30)
-gf_point(Sepal.Length ~ Sepal.Width, data = iris, color = ~Species) \%>\%
-gf_text(Sepal.Length ~ Sepal.Width, data = iris,
-  label = ~Species, color = ~Species,
-  size = 2, angle = 0, hjust = 0, nudge_x  = 0.1, nudge_y = 0.1)
+mtcars$model <- rownames(mtcars)
+mtcars$cylinders <- factor(mtcars$cyl)
 
-if (require(dplyr)) {
-  iris_means <-
-    iris \%>\%
-    group_by(Species) \%>\%
-    summarise(Sepal.Length = mean(Sepal.Length), Sepal.Width = mean(Sepal.Width))
-  gf_point(Sepal.Length ~ Sepal.Width, data = iris, color = ~ Species) \%>\%
-  gf_label(Sepal.Length ~ Sepal.Width, data = iris_means,
-    label = ~Species, color = ~Species, size = 2, alpha = 0.7)
-}
+p <-
+  gf_point(mpg ~ wt, data = mtcars, color = ~ cylinders)
+
+# Avoid overlaps by repelling text labels
+p \%>\% gf_text_repel(label = ~ model)
+
+# Labels with background
+p \%>\% gf_label_repel(label = ~ model)
+
+# Add aesthetic mappings
+p \%>\% gf_text_repel(alpha = ~ wt, size = ~ mpg, label = ~ model)
+p \%>\% gf_label_repel(label = ~ model,
+                     fill = ~ factor(cyl), color = "white", segment.color = "black")
+
+# Draw all line segments
+p \%>\% gf_text_repel(label = ~ model, min.segment.length = 0)
+
+# Omit short line segments (default behavior)
+p \%>\% gf_text_repel(label = ~ model, min.segment.length = 0.5)
+
+# Omit all line segments
+p \%>\% gf_text_repel(label = ~ model, segment.colour = NA)
+p \%>\% gf_text_repel(label = ~ model, min.segment.length = Inf)
+
+# Repel just the labels and totally ignore the data points
+p \%>\% gf_text_repel(label = ~ model, point.padding = NA)
+
+# Hide some of the labels, but repel from all data points
+mtcars$label <- rownames(mtcars)
+mtcars$label[1:15] <- ""
+p \%>\% gf_text_repel(data = mtcars, label = ~ label)
+
+# Nudge the starting positions
+p \%>\% gf_text_repel(
+        label = ~ model,
+        nudge_x = ifelse(mtcars$cyl == 6, 2, 0),
+        nudge_y = ifelse(mtcars$cyl == 6, 7, 0))
+
+# Change the text size
+p \%>\% gf_text_repel(label = ~ model, size = ~ wt)
+
+# Scale height of text, rather than sqrt(height)
+p \%>\%
+  gf_text_repel(label = ~ model, size = ~ wt) \%>\%
+  gf_refine(scale_radius(range = c(3, 6)))
+
+# You can display expressions by setting parse = TRUE.  The
+# details of the display are described in `?plotmath`, but note that
+# `gf_text_repel()` uses strings, not expressions.
+p \%>\%
+  gf_text_repel(label = ~ paste(wt, "^(", cyl, ")", sep = ""),
+                  parse = TRUE)
+
+# Add arrows
+p \%>\%
+  gf_point(colour = "black") \%>\%
+  gf_text_repel(
+    label = ~ model,
+    arrow = arrow(length = unit(0.02, "npc")),
+    box.padding = 1
+  )
+
+gf_point( 1 ~ wt, data = mtcars, color = "red") \%>\%
+  gf_text_repel(label = ~ model,
+    nudge_y      = 0.04,
+    direction    = "x",
+    angle        = 90,
+    vjust        = 0,
+    segment.size = 0.2) \%>\%
+ gf_lims(x = c(1, 6), y = c(1, 0.9)) \%>\%
+ gf_theme(
+    axis.line.y  = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.y  = element_blank(),
+    axis.title.y = element_blank()
+  ) \%>\%
+ gf_theme(theme_bw())
 }
 \seealso{
 \code{\link[ggplot2:geom_text]{ggplot2::geom_text()}}
