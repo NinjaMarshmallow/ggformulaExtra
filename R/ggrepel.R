@@ -8,6 +8,7 @@
 #' @inherit ggrepel::geom_text_repel
 #' @importFrom ggrepel geom_text_repel geom_label_repel
 #' @import ggplot2
+#' @import ggformula
 #'
 #' @export
 gf_text_repel <-
