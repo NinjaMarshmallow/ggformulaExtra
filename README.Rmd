@@ -32,8 +32,29 @@ devtools::install_github("ProjectMOSAIC/ggformulaExtra")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example that uses `ggrepel` to solve a common problem -- text labels that
+overlap.
 
 ```{r example}
 library(ggformulaExtra)
+theme_set(theme_bw())
+
+mtcars$model <- rownames(mtcars)
+mtcars$cylinders <- factor(mtcars$cyl)
+
+p <-
+  gf_point(mpg ~ wt, data = mtcars, color = ~ cylinders)
+
+# Avoid overlaps by repelling text labels
+p %>% gf_text_repel(label = ~ model)
+
+# Labels with background
+p %>% gf_label_repel(label = ~ model)
+
+# Add aesthetic mappings
+p %>% gf_text_repel(alpha = ~ wt, size = ~ mpg, label = ~ model)
+p %>% gf_label_repel(label = ~ model,
+                     fill = ~ factor(cyl), color = "white", segment.color = "black")
 ```
+
+More examples can be found in the package documentation.
