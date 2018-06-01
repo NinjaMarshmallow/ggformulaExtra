@@ -7,7 +7,7 @@ Version: 0.1.0
 Author: Randall Pruim
 Maintainer: Randall Pruim <rpruim@calvin.edu>
 License: What license is it under?
-Depends: ggformula
+Depends: ggformula, ggplot2
 Imports: ggrepel
 Suggests: dplyr, mosaicData, mosaic
 Encoding: UTF-8
